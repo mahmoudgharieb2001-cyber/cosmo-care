@@ -1,500 +1,1041 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>كوزمو كير | نظام إدارة الحالات والمتابعة</title>
-    <!-- Tailwind CSS v4 CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts (Cairo & Playfair Display for luxury touch) -->
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,400&display=swap');
-        
-        body {
-            font-family: 'Cairo', sans-serif;
-            background-color: #fdfbfb;
-            color: #2d2d2d;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cosmo Care System</title>
 
-        .luxury-font {
-            font-family: 'Playfair Display', serif;
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            cairo: ['Cairo', 'sans-serif'],
+            playfair: ['Playfair Display', 'serif']
+          },
+          colors: {
+            rosegold: '#B77A82',
+            rosequartz: '#E8C9CF',
+            lavender: '#CFC4E8',
+            plum: '#4A2948',
+            cream: '#FFF9FA'
+          }
         }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
 
-        /* Custom Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .animate-fade-in {
-            animation: fadeIn 0.4s ease-out forwards;
-        }
-
-        /* Print Styling */
-        @media print {
-            .no-print { display: none !important; }
-            body { background: white !important; }
-            .print-container { box-shadow: none !important; border: none !important; }
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #d8b4fe;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #c084fc;
-        }
-    </style>
+  <style>
+    :root{
+      --rose:#b56f7a;
+      --rose-deep:#8d4f5c;
+      --rose-soft:#f4dfe3;
+      --lav:#c9bee2;
+      --lav-soft:#f0ebf8;
+      --plum:#3b2339;
+      --plum-2:#55324f;
+      --cream:#fcf8f9;
+      --ink:#2d2630;
+      --muted:#81727e;
+      --line:rgba(80,42,70,.09);
+      --white:rgba(255,255,255,.88);
+      --shadow:0 20px 60px rgba(61,35,57,.08);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Cairo,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 8% 8%,rgba(232,201,207,.36),transparent 27%),
+        radial-gradient(circle at 90% 15%,rgba(207,196,232,.32),transparent 25%),
+        linear-gradient(135deg,#fffafb 0%,#faf5f8 46%,#f7f4fa 100%);
+      min-height:100vh;
+    }
+    body:before{
+      content:"";
+      position:fixed; inset:0; pointer-events:none; z-index:-1;
+      opacity:.35;
+      background-image:radial-gradient(rgba(74,41,72,.06) .7px,transparent .7px);
+      background-size:18px 18px;
+      mask-image:linear-gradient(to bottom,black,transparent 85%);
+    }
+    button,input,select,textarea{font-family:inherit}
+    button{transition:transform .2s ease,box-shadow .2s ease,background .2s ease,border-color .2s ease}
+    button:active{transform:scale(.98)}
+    input,select,textarea{color:var(--ink)}
+    input::placeholder,textarea::placeholder{color:#aa9ba5}
+    .glass{
+      background:rgba(255,255,255,.76);
+      backdrop-filter:blur(22px) saturate(125%);
+      -webkit-backdrop-filter:blur(22px) saturate(125%);
+      border:1px solid rgba(255,255,255,.8);
+      box-shadow:var(--shadow);
+    }
+    .sidebar{
+      background:
+        radial-gradient(circle at 20% 5%,rgba(232,201,207,.16),transparent 30%),
+        radial-gradient(circle at 90% 80%,rgba(207,196,232,.14),transparent 35%),
+        linear-gradient(180deg,#382037 0%,#4b2947 55%,#30202f 100%);
+      box-shadow:20px 0 60px rgba(44,25,42,.18);
+    }
+    .nav-btn{
+      position:relative;
+      color:rgba(255,255,255,.72);
+      transition:.25s ease;
+    }
+    .nav-btn:before{
+      content:"";
+      position:absolute;right:0;top:9px;bottom:9px;width:3px;border-radius:99px;
+      background:transparent;
+    }
+    .nav-btn:hover{background:rgba(255,255,255,.07);color:#fff}
+    .nav-btn.active{
+      background:linear-gradient(90deg,rgba(255,255,255,.13),rgba(255,255,255,.04));
+      border-color:rgba(255,255,255,.08);
+      color:#fff;
+      box-shadow:inset 0 1px rgba(255,255,255,.06);
+    }
+    .nav-btn.active:before{background:linear-gradient(#eac4cb,#cdbce7)}
+    .soft-shadow{box-shadow:var(--shadow)}
+    .modal-bg{background:rgba(37,22,35,.55);backdrop-filter:blur(9px)}
+    .badge{
+      display:inline-flex;align-items:center;gap:.35rem;
+      padding:.28rem .7rem;border-radius:999px;font-size:.7rem;font-weight:800;
+      border:1px solid transparent;
+    }
+    .status-new{background:#fae7eb;color:#9b5361;border-color:#f0ccd3}
+    .status-follow{background:#eee9f8;color:#6c5a98;border-color:#ddd4ee}
+    .status-done{background:#e6f5ee;color:#34785c;border-color:#ccebdd}
+    .status-stopped{background:#f0edef;color:#756872;border-color:#e2dce0}
+    .fade-in{animation:fadeIn .28s ease}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    .luxury-title{
+      font-family:"Playfair Display",serif;
+      letter-spacing:.01em;
+    }
+    .hero-glow{
+      position:relative;overflow:hidden;
+      background:
+        radial-gradient(circle at 90% 10%,rgba(232,201,207,.55),transparent 28%),
+        radial-gradient(circle at 10% 90%,rgba(207,196,232,.5),transparent 30%),
+        linear-gradient(135deg,rgba(255,255,255,.92),rgba(250,242,247,.72));
+    }
+    .hero-glow:after{
+      content:"✦";
+      position:absolute;left:6%;bottom:-20px;
+      font-family:"Playfair Display";font-size:150px;
+      color:rgba(181,111,122,.06);transform:rotate(-12deg);
+    }
+    .stat-card{position:relative;overflow:hidden}
+    .stat-card:after{
+      content:"";position:absolute;left:-35px;bottom:-55px;width:130px;height:130px;border-radius:50%;
+      background:linear-gradient(135deg,rgba(232,201,207,.28),rgba(207,196,232,.08));
+    }
+    .stat-icon{
+      width:42px;height:42px;border-radius:14px;
+      display:flex;align-items:center;justify-content:center;
+      background:linear-gradient(135deg,#f7e5e8,#eee7f6);
+      color:var(--plum);
+      box-shadow:0 8px 18px rgba(74,41,72,.08);
+    }
+    .section-kicker{
+      font-size:.68rem;font-weight:800;letter-spacing:.12em;color:var(--rose);
+    }
+    .premium-btn{
+      background:linear-gradient(135deg,#4a2948,#6b3d63);
+      box-shadow:0 12px 28px rgba(74,41,72,.18);
+    }
+    .premium-btn:hover{box-shadow:0 16px 35px rgba(74,41,72,.25);transform:translateY(-1px)}
+    .rose-btn{
+      background:linear-gradient(135deg,#b56f7a,#9c5965);
+      box-shadow:0 10px 24px rgba(181,111,122,.2);
+    }
+    .rose-btn:hover{box-shadow:0 14px 30px rgba(181,111,122,.28);transform:translateY(-1px)}
+    .field{
+      width:100%;border:1px solid rgba(183,122,130,.15);
+      background:rgba(255,255,255,.78);border-radius:14px;
+      padding:.78rem 1rem;outline:none;transition:.2s;
+    }
+    .field:focus{border-color:rgba(181,111,122,.45);box-shadow:0 0 0 4px rgba(181,111,122,.08)}
+    .table-head{background:linear-gradient(90deg,#fbf1f3,#f8f4fb)}
+    .table-row{border-top:1px solid rgba(74,41,72,.055)}
+    .table-row:hover{background:rgba(244,223,227,.18)}
+    .modal-card{box-shadow:0 35px 90px rgba(37,22,35,.25)}
+    .mini-line{height:1px;background:linear-gradient(90deg,transparent,var(--rose-soft),transparent)}
+    @media(max-width:1023px){
+      .sidebar{box-shadow:-20px 0 70px rgba(44,25,42,.2)}
+    }
+    @media print{
+      body{background:#fff!important}
+      body:before{display:none}
+      .no-print,aside,header.app-header{display:none!important}
+      main{margin:0!important;width:100%!important;padding:0!important}
+      .print-report{display:block!important}
+      .glass{box-shadow:none!important;border:0!important;background:#fff!important}
+      @page{size:A4;margin:12mm}
+    }
+  </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between selection:bg-rose-200 selection:text-rose-900">
 
-    <!-- Top Luxury Header -->
-    <header class="bg-gradient-to-r from-rose-900 via-rose-800 to-purple-900 text-white shadow-xl no-print relative overflow-hidden">
-        <div class="absolute -right-10 -top-10 w-40 h-40 bg-rose-500/10 rounded-full blur-2xl pointer-events-none"></div>
-        <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-purple-500/10 rounded-full blur-2xl pointer-events-none"></div>
-        
-        <div class="container mx-auto px-4 py-5 flex flex-col md:flex-row justify-between items-center gap-4 relative z-10">
-            <div class="flex items-center space-x-4 space-x-reverse">
-                <div class="w-12 h-12 bg-gradient-to-br from-rose-200 to-rose-400 text-rose-950 rounded-2xl flex items-center justify-center text-2xl shadow-inner animate-pulse">
-                    <i class="fa-solid fa-spa"></i>
-                </div>
-                <div>
-                    <h1 class="text-2xl font-bold tracking-wide luxury-font">كوزمو كير <span class="text-rose-300 text-sm font-normal font-sans">Cosmo Care</span></h1>
-                    <p class="text-xs text-rose-200 flex items-center gap-2 mt-0.5">
-                        <span><i class="fa-solid fa-user-doctor text-rose-300"></i> إشراف: د. غادة مسعد</span>
-                        <span class="text-rose-400">•</span>
-                        <span><i class="fa-solid fa-user-check text-rose-300"></i> متابعة: سها طلبة</span>
-                    </p>
-                </div>
-            </div>
-            
-            <div class="flex items-center gap-3">
-                <div id="connection-status" class="bg-rose-950/60 border border-rose-500/30 text-rose-200 text-xs px-3.5 py-1.5 rounded-full font-medium flex items-center gap-2 backdrop-blur-sm shadow-sm">
-                    <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span> جاري الاتصال بقاعدة البيانات...
-                </div>
-            </div>
-        </div>
-    </header>
+<body>
+<div id="toastRoot" class="fixed top-4 left-4 z-[100] space-y-2"></div>
 
-    <!-- Main Content Area -->
-    <main class="container mx-auto px-4 py-8 flex-grow grid grid-cols-1 xl:grid-cols-4 gap-8">
-        
-        <!-- Sidebar Controls (Admin Inputs) -->
-        <div class="xl:col-span-1 space-y-6 no-print">
-            
-            <!-- Add Specialty Card -->
-            <div class="bg-white/80 backdrop-blur-md p-6 rounded-3xl shadow-sm border border-rose-100 hover:shadow-md transition duration-300 animate-fade-in">
-                <h2 class="text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
-                    <span class="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-sm"><i class="fa-solid fa-tags"></i></span> 
-                    إضافة تخصص جديد
-                </h2>
-                <form id="specialty-form" class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1.5">اسم الخدمة / التخصص</label>
-                        <input type="text" id="specialty-name" placeholder="مثلاً: ترطيب، خلايا، نحافة..." required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:ring-2 focus:ring-rose-400 focus:bg-white outline-none transition">
-                    </div>
-                    <button type="submit" class="w-full bg-gradient-to-r from-rose-700 to-rose-800 hover:from-rose-800 hover:to-rose-900 text-white py-2.5 rounded-2xl font-semibold text-sm shadow-md shadow-rose-600/20 transition duration-300 flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-plus text-xs"></i> حفظ التخصص
-                    </button>
-                </form>
-            </div>
-
-            <!-- Add Client Card -->
-            <div class="bg-white/80 backdrop-blur-md p-6 rounded-3xl shadow-sm border border-rose-100 hover:shadow-md transition duration-300 animate-fade-in">
-                <h2 class="text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
-                    <span class="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-sm"><i class="fa-solid fa-user-plus"></i></span> 
-                    تسجيل حالة جديدة
-                </h2>
-                <form id="client-form" class="space-y-3.5">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">اسم الحالة بالكامل</label>
-                        <input type="text" id="client-name" placeholder="الاسم الكريم" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:ring-2 focus:ring-rose-400 focus:bg-white outline-none transition">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">رقم التلفون</label>
-                        <input type="tel" id="client-phone" placeholder="01xxxxxxxx" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:ring-2 focus:ring-rose-400 focus:bg-white outline-none transition">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">العنوان</label>
-                        <input type="text" id="client-address" placeholder="المدينة / المنطقة" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:ring-2 focus:ring-rose-400 focus:bg-white outline-none transition">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">التخصص المطلوب</label>
-                        <select id="client-specialty" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:ring-2 focus:ring-rose-400 focus:bg-white outline-none transition cursor-pointer">
-                            <option value="">اختر التخصص...</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-600 mb-1">تاريخ بداية المتابعة</label>
-                        <input type="date" id="client-start-date" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:ring-2 focus:ring-rose-400 focus:bg-white outline-none transition">
-                    </div>
-                    <button type="submit" class="w-full bg-gradient-to-r from-rose-800 to-purple-800 hover:from-rose-900 hover:to-purple-900 text-white py-3 rounded-2xl font-semibold text-sm shadow-lg shadow-rose-900/20 transition duration-300 flex items-center justify-center gap-2 mt-2">
-                        <i class="fa-solid fa-check text-xs"></i> تسجيل الحالة في السيستم
-                    </button>
-                </form>
-            </div>
-
-        </div>
-
-        <!-- Data & Reports Section -->
-        <div class="xl:col-span-3 space-y-6">
-            
-            <!-- Filter & Print Action Bar -->
-            <div class="bg-white/80 backdrop-blur-md p-4 rounded-3xl shadow-sm border border-rose-100 flex flex-wrap items-center justify-between gap-4 no-print">
-                <div class="flex items-center gap-3">
-                    <span class="text-xs font-bold text-slate-600 flex items-center gap-1.5"><i class="fa-solid fa-filter text-rose-500"></i> فلترة حسب التاريخ:</span>
-                    <input type="date" id="filter-date" class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-rose-400">
-                    <button id="reset-filter" class="text-xs text-slate-500 hover:text-rose-600 font-medium underline">إلغاء الفلتر</button>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button onclick="window.print()" class="bg-slate-900 hover:bg-rose-900 text-white px-5 py-2 rounded-2xl font-medium text-xs transition duration-300 flex items-center gap-2 shadow-sm">
-                        <i class="fa-solid fa-file-pdf"></i> طباعة التقرير / حفظ PDF
-                    </button>
-                </div>
-            </div>
-
-            <!-- Report Header for Print / View -->
-            <div id="printable-report-area" class="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-rose-100 space-y-6 print-container">
-                
-                <!-- Official Letterhead (Visible in Print & UI) -->
-                <div class="text-center pb-6 border-b border-slate-100 space-y-2">
-                    <h2 class="text-3xl font-bold text-rose-950 luxury-font tracking-wide">كوزمو كير <span class="text-rose-600 text-lg font-normal">Cosmo Care</span></h2>
-                    <p class="text-xs text-slate-500 font-medium">مركز التجميل والعناية المتكاملة</p>
-                    <div class="flex justify-center items-center gap-6 pt-2 text-xs font-semibold text-slate-700">
-                        <span class="bg-rose-50 px-3 py-1 rounded-full border border-rose-100"><i class="fa-solid fa-user-doctor text-rose-600"></i> إشراف: د. غادة مسعد</span>
-                        <span class="bg-purple-50 px-3 py-1 rounded-full border border-purple-100"><i class="fa-solid fa-user-check text-purple-600"></i> متابعة: سها طلبة</span>
-                    </div>
-                </div>
-
-                <!-- Summary Bar & Report Title -->
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                    <div>
-                        <h3 id="report-main-title" class="text-lg font-bold text-slate-800">سجل الحالات والمتابعة التفصيلي</h3>
-                        <p id="report-sub-title" class="text-xs text-slate-400">تقرير شامل لحالات المركز اليومية</p>
-                    </div>
-                    <div id="total-count-badge" class="bg-rose-50 text-rose-800 px-4 py-1.5 rounded-full text-xs font-bold border border-rose-200">
-                        إجمالي الحالات: 0
-                    </div>
-                </div>
-
-                <!-- Main Data Table -->
-                <div class="overflow-x-auto min-h-[220px]">
-                    <table class="w-full text-right border-collapse">
-                        <thead>
-                            <tr class="border-b border-slate-200 text-slate-400 text-xs uppercase tracking-wider">
-                                <th class="py-3 px-3 font-semibold">اسم الحالة</th>
-                                <th class="py-3 px-3 font-semibold">رقم التلفون</th>
-                                <th class="py-3 px-3 font-semibold">العنوان</th>
-                                <th class="py-3 px-3 font-semibold">التخصص المطلوب</th>
-                                <th class="py-3 px-3 font-semibold">تاريخ البداية</th>
-                                <th class="py-3 px-3 font-semibold">آخر متابعة</th>
-                                <th class="py-3 px-3 font-semibold no-print">إجراءات المتابعة</th>
-                            </tr>
-                        </thead>
-                        <tbody id="clients-table-body" class="divide-y divide-slate-100 text-xs">
-                            <tr>
-                                <td colspan="7" class="text-center py-16 text-slate-400 font-medium">
-                                    <div class="flex flex-col items-center justify-center gap-3">
-                                        <div class="w-12 h-12 rounded-full bg-rose-50 text-rose-400 flex items-center justify-center text-xl">
-                                            <i class="fa-solid fa-folder-open"></i>
-                                        </div>
-                                        <span>لا توجد حالات مسجلة حتى الآن. ابدأ بإضافة الحالات الجديدة من القائمة الجانبية.</span>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Official Footer Signatures for Print -->
-                <div class="pt-8 mt-12 border-t border-slate-100 flex justify-between items-end text-xs text-slate-600">
-                    <div class="space-y-1">
-                        <p class="font-bold text-slate-800">إشراف عام:</p>
-                        <p class="text-rose-900 font-semibold luxury-font text-sm">د. غادة مسعد</p>
-                    </div>
-                    <div class="space-y-1 text-left">
-                        <p class="font-bold text-slate-800">مسؤول المتابعة:</p>
-                        <p class="text-purple-900 font-semibold luxury-font text-sm">سها طلبة</p>
-                    </div>
-                </div>
-
-            </div>
-
-        </div>
-
-    </main>
-
-    <!-- Follow-up Modal -->
-    <div id="followup-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
-        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-rose-100 animate-fade-in">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
-                    <i class="fa-solid fa-phone-volume text-rose-600"></i> تسجيل متابعة جديدة للحالة
-                </h3>
-                <button onclick="closeFollowupModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-rose-50 hover:text-rose-600 flex items-center justify-center transition">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-            <form id="followup-form" class="space-y-4">
-                <input type="hidden" id="modal-client-id">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">اسم الحالة</label>
-                    <input type="text" id="modal-client-name" disabled class="w-full px-4 py-2 bg-slate-100 border border-slate-200 rounded-2xl text-xs text-slate-600 font-medium">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">تاريخ ووقت التواصل</label>
-                    <input type="datetime-local" id="modal-contact-date" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-2xl text-xs outline-none focus:ring-2 focus:ring-rose-400">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">ملاحظات التواصل / حالة العميل</label>
-                    <textarea id="modal-feedback" rows="3" placeholder="اكتب تفاصيل المتابعة واستجابة الحالة..." required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-2xl text-xs outline-none focus:ring-2 focus:ring-rose-400 resize-none"></textarea>
-                </div>
-                <div class="pt-2">
-                    <button type="submit" class="w-full bg-rose-700 hover:bg-rose-800 text-white py-2.5 rounded-2xl font-semibold text-xs shadow-md shadow-rose-600/20 transition duration-300">
-                        حفظ المتابعة (سها طلبة)
-                    </button>
-                </div>
-            </form>
-        </div>
+<div id="app" class="min-h-screen">
+  <!-- Mobile Header -->
+  <header class="app-header lg:hidden sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-rose-100 px-4 py-3 flex items-center justify-between">
+    <button id="mobileMenuBtn" class="w-10 h-10 rounded-xl bg-plum text-white">☰</button>
+    <div class="text-center">
+      <div class="font-playfair text-lg font-bold text-plum">Cosmo Care</div>
+      <div class="text-[10px] text-rose-700">Beauty & Care Management</div>
     </div>
+    <button id="mobileAddBtn" class="w-10 h-10 rounded-xl bg-rose-600 text-white">＋</button>
+  </header>
 
-    <!-- Footer -->
-    <footer class="bg-white border-t border-slate-100 py-4 text-center text-xs text-slate-400 no-print">
-        <p>جميع الحقوق محفوظة © 2026 مركز كوزمو كير (Cosmo Care) • تحت إشراف د. غادة مسعد</p>
-    </footer>
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar fixed lg:sticky top-0 right-0 z-50 h-screen w-[280px] text-white p-5 transform translate-x-full lg:translate-x-0 transition-transform duration-300 flex flex-col">
+      <div class="flex items-center gap-3 mb-8">
+        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-white/20 to-white/5 border border-white/15 flex items-center justify-center text-2xl shadow-lg">✦</div>
+        <div>
+          <div class="font-playfair text-[27px] font-bold tracking-tight">Cosmo Care</div>
+          <div class="text-[10px] text-rose-100/65 tracking-[.16em]">LUXURY BEAUTY CENTER</div>
+        </div>
+      </div>
 
-    <!-- Firebase SDK & Integration Script -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addTimestamp, addDoc, getDocs, doc, updateDoc, deleteDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+      <div class="rounded-2xl bg-white/8 border border-white/10 p-4 mb-6">
+        <div class="text-[11px] text-rose-100/60 mb-1">الإشراف الطبي والعام</div>
+        <div class="font-bold">د. غادة مسعد</div>
+        <div class="text-xs text-rose-100/60 mt-1">مسؤولة المتابعة: سها طلبة</div>
+      </div>
 
-        // Your Firebase Configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyDrfLHxOsIs4umkK1sP3CTWvI_ewQP187U",
-            authDomain: "dr-ghada.firebaseapp.com",
-            projectId: "dr-ghada",
-            storageBucket: "dr-ghada.firebasestorage.app",
-            messagingSenderId: "826625252089",
-            appId: "1:826625252089:web:870c3c1ef7ef8d34fd6028"
-        };
+      <nav class="space-y-2">
+        <button data-page="dashboard" class="nav-btn active w-full text-right px-4 py-3 rounded-xl border border-transparent">⌂ &nbsp; الرئيسية</button>
+        <button data-page="clients" class="nav-btn w-full text-right px-4 py-3 rounded-xl border border-transparent">◉ &nbsp; الحالات</button>
+        <button data-page="specialties" class="nav-btn w-full text-right px-4 py-3 rounded-xl border border-transparent">✦ &nbsp; التخصصات والخدمات</button>
+        <button data-page="reports" class="nav-btn w-full text-right px-4 py-3 rounded-xl border border-transparent">▤ &nbsp; التقارير</button>
+      </nav>
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+      <div class="mt-auto">
+        <div class="rounded-2xl bg-white/7 border border-white/10 p-4 text-xs text-rose-100/70">
+          <div class="flex items-center justify-between mb-2">
+            <span>حالة المزامنة</span>
+            <span id="syncDot" class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+          </div>
+          <div id="syncText">جاري الاتصال...</div>
+        </div>
+        <div class="text-[10px] text-center text-rose-100/40 mt-4">Cosmo Care System • Firestore</div>
+      </div>
+    </aside>
 
-        // UI Elements
-        const statusBadge = document.getElementById("connection-status");
-        const specialtyForm = document.getElementById("specialty-form");
-        const clientForm = document.getElementById("client-form");
-        const specialtySelect = document.getElementById("client-specialty");
-        const clientsTableBody = document.getElementById("clients-table-body");
-        const totalCountBadge = document.getElementById("total-count-badge");
-        const filterDateInput = document.getElementById("filter-date");
-        const resetFilterBtn = document.getElementById("reset-filter");
-        
-        // Modal Elements
-        const followupModal = document.getElementById("followup-modal");
-        const followupForm = document.getElementById("followup-form");
-        const modalClientId = document.getElementById("modal-client-id");
-        const modalClientName = document.getElementById("modal-client-name");
-        const modalContactDate = document.getElementById("modal-contact-date");
-        const modalFeedback = document.getElementById("modal-feedback");
+    <div id="sidebarOverlay" class="fixed inset-0 z-40 bg-black/30 hidden lg:hidden"></div>
 
-        // Global State
-        let allSpecialties = [];
-        let allClients = [];
+    <!-- Main -->
+    <main class="flex-1 min-w-0 p-4 sm:p-6 lg:p-8">
+      <section id="page-dashboard" class="page fade-in">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-7">
+          <div>
+            <div class="section-kicker mb-2">COSMO CARE • MANAGEMENT SUITE</div>
+            <h1 class="text-3xl sm:text-4xl lg:text-[42px] font-extrabold text-plum leading-tight">لوحة التحكم</h1>
+            <p class="text-sm text-gray-500 mt-2">إدارة أنيقة وهادئة لكل الحالات والمتابعات اليومية.</p>
+          </div>
+          <button id="dashboardAdd" class="no-print premium-btn px-5 py-3 rounded-2xl text-white font-bold">＋ تسجيل حالة جديدة</button>
+        </div>
 
-        // Set default date to today in forms
-        const todayStr = new Date().toISOString().split('T')[0];
-        document.getElementById("client-start-date").value = todayStr;
-        modalContactDate.value = new Date().toISOString().slice(0, 16);
+        <div class="hero-glow glass rounded-[28px] p-5 sm:p-7 mb-6 border border-white/70">
+          <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-5">
+            <div>
+              <div class="text-xs font-bold text-rose-600 mb-2">A LITTLE LUXURY IN EVERY DETAIL</div>
+              <div class="luxury-title text-2xl sm:text-3xl font-bold text-plum">Cosmo Care</div>
+              <p class="text-sm text-gray-500 mt-2 max-w-2xl">منظومة موحدة لتسجيل الحالات وتنظيم المتابعة وإخراج التقارير بصورة احترافية تليق بالمركز.</p>
+            </div>
+            <div class="flex items-center gap-3 shrink-0">
+              <div class="w-14 h-14 rounded-2xl bg-white/75 border border-white flex items-center justify-center text-2xl text-rose-600 shadow-sm">✦</div>
+              <div>
+                <div class="font-bold text-plum">د. غادة مسعد</div>
+                <div class="text-xs text-gray-500">الإشراف العام والطبي</div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-        // Update Connection Status
-        setTimeout(() => {
-            statusBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400"></span> متصل بـ Firebase بنجاح`;
-            statusBadge.className = "bg-emerald-950/60 border border-emerald-500/30 text-emerald-200 text-xs px-3.5 py-1.5 rounded-full font-medium flex items-center gap-2 backdrop-blur-sm shadow-sm";
-        }, 1000);
+        <div class="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-5 mb-7">
+          <div class="glass stat-card rounded-3xl p-5">
+            <div class="stat-icon mb-4">♡</div><div class="text-xs text-gray-500">إجمالي الحالات</div>
+            <div id="statTotal" class="text-3xl font-extrabold text-plum mt-2">0</div>
+          </div>
+          <div class="glass stat-card rounded-3xl p-5">
+            <div class="stat-icon mb-4">✦</div><div class="text-xs text-gray-500">حالات جديدة</div>
+            <div id="statNew" class="text-3xl font-extrabold text-rose-600 mt-2">0</div>
+          </div>
+          <div class="glass stat-card rounded-3xl p-5">
+            <div class="stat-icon mb-4">◌</div><div class="text-xs text-gray-500">قيد المتابعة</div>
+            <div id="statFollow" class="text-3xl font-extrabold text-purple-700 mt-2">0</div>
+          </div>
+          <div class="glass stat-card rounded-3xl p-5">
+            <div class="stat-icon mb-4">✓</div><div class="text-xs text-gray-500">مكتملة</div>
+            <div id="statDone" class="text-3xl font-extrabold text-emerald-700 mt-2">0</div>
+          </div>
+        </div>
 
-        // 1. Fetch Specialties Real-time
-        onSnapshot(collection(db, "specialties"), (snapshot) => {
-            allSpecialties = [];
-            specialtySelect.innerHTML = '<option value="">اختر التخصص...</option>';
-            snapshot.forEach((docSnap) => {
-                const data = docSnap.data();
-                allSpecialties.push({ id: docSnap.id, ...data });
-                const option = document.createElement("option");
-                option.value = data.name;
-                option.textContent = data.name;
-                specialtySelect.appendChild(option);
-            });
-        }, (error) => {
-            console.error("Error fetching specialties:", error);
-        });
+        <div class="grid xl:grid-cols-3 gap-6">
+          <div class="xl:col-span-2 glass rounded-3xl p-5 sm:p-6">
+            <div class="flex items-center justify-between mb-5">
+              <div>
+                <h2 class="font-extrabold text-lg">آخر الحالات</h2>
+                <p class="text-xs text-gray-500">أحدث السجلات المضافة</p>
+              </div>
+              <button data-page-jump="clients" class="text-sm text-rose-700 font-bold">عرض الكل</button>
+            </div>
+            <div id="recentClients" class="space-y-3"></div>
+          </div>
 
-        // 2. Fetch Clients Real-time
-        onSnapshot(collection(db, "clients"), (snapshot) => {
-            allClients = [];
-            snapshot.forEach((docSnap) => {
-                allClients.push({ id: docSnap.id, ...docSnap.data() });
-            });
-            renderClients(allClients);
-        }, (error) => {
-            console.error("Error fetching clients:", error);
-            clientsTableBody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-rose-500">حدث خطأ أثناء الاتصال بقاعدة البيانات. تأكد من اتصال الإنترنت.</td></tr>`;
-        });
+          <div class="glass rounded-[28px] p-5 sm:p-6">
+            <h2 class="font-extrabold text-lg mb-1">التخصصات</h2>
+            <p class="text-xs text-gray-500 mb-5">توزيع الحالات حسب الخدمة</p>
+            <div id="specialtySummary" class="space-y-3"></div>
+          </div>
+        </div>
+      </section>
 
-        // Add Specialty Handler
-        specialtyForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const nameInput = document.getElementById("specialty-name");
-            const name = nameInput.value.trim();
-            if(!name) return;
+      <section id="page-clients" class="page hidden fade-in">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+          <div>
+            <h1 class="text-3xl font-extrabold text-plum">الحالات</h1>
+            <p class="text-sm text-gray-500">ملفات العملاء وسجل المتابعة.</p>
+          </div>
+          <button id="clientsAdd" class="no-print premium-btn px-5 py-3 rounded-2xl text-white font-bold">＋ إضافة حالة</button>
+        </div>
 
-            try {
-                await addDoc(collection(db, "specialties"), {
-                    name: name,
-                    createdAt: new Date().toISOString()
-                });
-                nameInput.value = "";
-            } catch (err) {
-                alert("حدث خطأ أثناء إضافة التخصص: " + err.message);
-            }
-        });
+        <div class="glass rounded-3xl p-4 mb-5 no-print">
+          <div class="grid md:grid-cols-4 gap-3">
+            <input id="searchInput" class="md:col-span-2 rounded-xl border border-rose-100 bg-white px-4 py-3 outline-none focus:ring-2 focus:ring-rose-200" placeholder="ابحثي بالاسم أو رقم الهاتف">
+            <select id="filterSpecialty" class="field"></select>
+            <select id="filterStatus" class="field">
+              <option value="">كل الحالات</option>
+              <option value="جديدة">جديدة</option>
+              <option value="متابعة">متابعة</option>
+              <option value="مكتملة">مكتملة</option>
+              <option value="متوقفة">متوقفة</option>
+            </select>
+          </div>
+        </div>
 
-        // Add Client Handler
-        clientForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const clientData = {
-                fullName: document.getElementById("client-name").value.trim(),
-                phone: document.getElementById("client-phone").value.trim(),
-                address: document.getElementById("client-address").value.trim(),
-                specialty: specialtySelect.value,
-                startDate: document.getElementById("client-start-date").value,
-                lastFollowup: "لم يتم التواصل بعد",
-                lastFollowupDate: "",
-                createdAt: new Date().toISOString()
-            };
+        <div class="glass rounded-[28px] overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead class="table-head">
+                <tr>
+                  <th class="text-right p-4">الحالة</th>
+                  <th class="text-right p-4">الهاتف</th>
+                  <th class="text-right p-4">التخصص</th>
+                  <th class="text-right p-4">بداية المتابعة</th>
+                  <th class="text-right p-4">الحالة</th>
+                  <th class="p-4 no-print">إجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="clientsTable"></tbody>
+            </table>
+          </div>
+          <div id="clientsEmpty" class="hidden text-center py-16 text-gray-400">
+            <div class="text-4xl mb-3">♡</div>
+            <div class="font-bold">لا توجد حالات حتى الآن</div>
+            <div class="text-xs mt-1">ابدئي بتسجيل أول حالة.</div>
+          </div>
+        </div>
+      </section>
 
-            try {
-                await addDoc(collection(db, "clients"), clientData);
-                clientForm.reset();
-                document.getElementById("client-start-date").value = todayStr;
-            } catch (err) {
-                alert("حدث خطأ أثناء حفظ الحالة: " + err.message);
-            }
-        });
+      <section id="page-specialties" class="page hidden fade-in">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+          <div>
+            <h1 class="text-3xl font-extrabold text-plum">التخصصات والخدمات</h1>
+            <p class="text-sm text-gray-500">أضيفي أي خدمة جديدة وستظهر مباشرة في نماذج الحالات.</p>
+          </div>
+          <button id="addSpecialtyBtn" class="no-print premium-btn px-5 py-3 rounded-2xl text-white font-bold">＋ إضافة تخصص</button>
+        </div>
+        <div id="specialtiesGrid" class="grid sm:grid-cols-2 xl:grid-cols-3 gap-5"></div>
+        <div id="specialtiesEmpty" class="hidden glass rounded-3xl py-16 text-center text-gray-400">
+          لا توجد تخصصات مضافة بعد.
+        </div>
+      </section>
 
-        // Render Clients Table
-        window.renderClients = function(clients) {
-            totalCountBadge.textContent = `إجمالي الحالات: ${clients.length}`;
-            if(clients.length === 0) {
-                clientsTableBody.innerHTML = `
-                    <tr>
-                        <td colspan="7" class="text-center py-16 text-slate-400 font-medium">
-                            <div class="flex flex-col items-center justify-center gap-3">
-                                <div class="w-12 h-12 rounded-full bg-rose-50 text-rose-400 flex items-center justify-center text-xl">
-                                    <i class="fa-solid fa-folder-open"></i>
-                                </div>
-                                <span>لا توجد حالات مطابقة للبحث أو التاريخ المحدد.</span>
-                            </div>
-                        </td>
-                    </tr>`;
-                return;
-            }
+      <section id="page-reports" class="page hidden fade-in">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 no-print">
+          <div>
+            <h1 class="text-3xl font-extrabold text-plum">التقارير</h1>
+            <p class="text-sm text-gray-500">إنشاء تقرير رسمي قابل للطباعة.</p>
+          </div>
+          <button id="printReportBtn" class="premium-btn px-5 py-3 rounded-2xl text-white font-bold">⎙ طباعة التقرير</button>
+        </div>
 
-            clientsTableBody.innerHTML = "";
-            clients.forEach((client) => {
-                const tr = document.createElement("tr");
-                tr.className = "border-b border-slate-100 hover:bg-rose-50/30 transition duration-150";
-                tr.innerHTML = `
-                    <td class="py-3 px-3 font-bold text-slate-800">${client.fullName}</td>
-                    <td class="py-3 px-3 text-slate-600" dir="ltr">${client.phone}</td>
-                    <td class="py-3 px-3 text-slate-600">${client.address}</td>
-                    <td class="py-3 px-3"><span class="bg-rose-50 text-rose-800 px-2.5 py-1 rounded-lg font-medium text-[11px] border border-rose-100">${client.specialty}</span></td>
-                    <td class="py-3 px-3 text-slate-600">${client.startDate}</td>
-                    <td class="py-3 px-3 text-slate-600 font-medium">${client.lastFollowup}</td>
-                    <td class="py-3 px-3 no-print">
-                        <div class="flex items-center gap-2">
-                            <button onclick="openFollowupModal('${client.id}', '${client.fullName}')" class="bg-rose-100 hover:bg-rose-200 text-rose-800 px-3 py-1.5 rounded-xl font-semibold transition flex items-center gap-1.5 text-[11px]">
-                                <i class="fa-solid fa-phone"></i> متابعة
-                            </button>
-                            <button onclick="deleteClient('${client.id}')" class="bg-slate-100 hover:bg-red-100 text-slate-500 hover:text-red-600 p-1.5 rounded-xl transition">
-                                <i class="fa-solid fa-trash-can text-xs"></i>
-                            </button>
-                        </div>
-                    </td>
-                `;
-                clientsTableBody.appendChild(tr);
-            });
-        }
+        <div class="glass rounded-3xl p-5 mb-5 no-print">
+          <div class="grid md:grid-cols-3 gap-3">
+            <div>
+              <label class="text-xs text-gray-500 block mb-1">من تاريخ</label>
+              <input id="reportFrom" type="date" class="field">
+            </div>
+            <div>
+              <label class="text-xs text-gray-500 block mb-1">إلى تاريخ</label>
+              <input id="reportTo" type="date" class="field">
+            </div>
+            <div class="flex items-end">
+              <button id="generateReportBtn" class="w-full rounded-xl bg-rose-600 text-white px-4 py-3">تحديث التقرير</button>
+            </div>
+          </div>
+        </div>
 
-        // Filter by Date
-        filterDateInput.addEventListener("change", (e) => {
-            const selectedDate = e.target.value;
-            if(!selectedDate) return;
-            const filtered = allClients.filter(c => c.startDate === selectedDate);
-            renderClients(filtered);
-            document.getElementById("report-sub-title").textContent = `تقرير الحالات المسجلة بتاريخ: ${selectedDate}`;
-        });
+        <div id="printReport" class="print-report glass rounded-3xl p-6 sm:p-8 bg-white">
+          <div class="text-center border-b-2 border-rose-100 pb-5 mb-6">
+            <div class="luxury-title text-4xl font-bold text-plum">Cosmo Care</div>
+            <div class="text-sm text-rose-700 mt-1">مركز كوزمو كير للتجميل والعناية</div>
+            <div class="font-bold mt-4">تقرير متابعة الحالات</div>
+            <div class="text-xs text-gray-500 mt-1" id="reportPeriod">جميع السجلات</div>
+            <div class="mt-3 text-sm">الإشراف العام والطبي: <strong>د. غادة مسعد</strong></div>
+          </div>
 
-        resetFilterBtn.addEventListener("click", () => {
-            filterDateInput.value = "";
-            renderClients(allClients);
-            document.getElementById("report-sub-title").textContent = "تقرير شامل لحالات المركز اليومية";
-        });
+          <div class="grid grid-cols-3 gap-3 mb-6 text-center">
+            <div class="border rounded-xl p-3"><div class="text-xs text-gray-500">عدد الحالات</div><strong id="reportTotal">0</strong></div>
+            <div class="border rounded-xl p-3"><div class="text-xs text-gray-500">قيد المتابعة</div><strong id="reportFollow">0</strong></div>
+            <div class="border rounded-xl p-3"><div class="text-xs text-gray-500">مكتملة</div><strong id="reportDone">0</strong></div>
+          </div>
 
-        // Modal Functions
-        window.openFollowupModal = function(id, name) {
-            modalClientId.value = id;
-            modalClientName.value = name;
-            modalContactDate.value = new Date().toISOString().slice(0, 16);
-            modalFeedback.value = "";
-            followupModal.classList.remove("hidden");
-        }
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm border-collapse">
+              <thead>
+                <tr class="bg-rose-50">
+                  <th class="border p-2">#</th>
+                  <th class="border p-2 text-right">اسم الحالة</th>
+                  <th class="border p-2 text-right">الهاتف</th>
+                  <th class="border p-2 text-right">التخصص</th>
+                  <th class="border p-2">بداية المتابعة</th>
+                  <th class="border p-2">الحالة</th>
+                </tr>
+              </thead>
+              <tbody id="reportTable"></tbody>
+            </table>
+          </div>
 
-        window.closeFollowupModal = function() {
-            followupModal.classList.add("hidden");
-        }
+          <div class="mt-20 grid grid-cols-2 gap-10 text-center">
+            <div>
+              <div class="font-bold mb-12">الإشراف الطبي</div>
+              <div>د. غادة مسعد</div>
+            </div>
+            <div>
+              <div class="font-bold mb-12">مسؤولة المتابعة والاعتماد</div>
+              <div>سها طلبة</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
 
-        // Save Follow-up
-        followupForm.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const id = modalClientId.value;
-            const contactDate = modalContactDate.value;
-            const feedback = modalFeedback.value.trim();
+<!-- Client Modal -->
+<div id="clientModal" class="hidden fixed inset-0 z-[80] modal-bg p-3 sm:p-6 overflow-y-auto">
+  <div class="max-w-2xl mx-auto bg-white/95 backdrop-blur-xl rounded-[30px] modal-card my-4">
+    <div class="p-5 border-b flex items-center justify-between">
+      <div>
+        <h2 id="clientModalTitle" class="text-xl font-extrabold text-plum">تسجيل حالة جديدة</h2>
+        <p class="text-xs text-gray-500 mt-1">أدخلي البيانات الأساسية بدقة.</p>
+      </div>
+      <button data-close="clientModal" class="w-10 h-10 rounded-xl bg-gray-100">×</button>
+    </div>
+    <form id="clientForm" class="p-5 space-y-4">
+      <input type="hidden" id="clientId">
+      <div class="grid md:grid-cols-2 gap-4">
+        <div>
+          <label class="text-xs font-bold block mb-1">اسم الحالة *</label>
+          <input id="clientName" required class="field">
+        </div>
+        <div>
+          <label class="text-xs font-bold block mb-1">رقم الهاتف *</label>
+          <input id="clientPhone" required inputmode="tel" class="field">
+        </div>
+        <div>
+          <label class="text-xs font-bold block mb-1">العنوان</label>
+          <input id="clientAddress" class="field">
+        </div>
+        <div>
+          <label class="text-xs font-bold block mb-1">التخصص / الخدمة *</label>
+          <select id="clientSpecialty" required class="field"></select>
+        </div>
+        <div>
+          <label class="text-xs font-bold block mb-1">تاريخ بداية المتابعة *</label>
+          <input id="clientStartDate" type="date" required class="field">
+        </div>
+        <div>
+          <label class="text-xs font-bold block mb-1">حالة الملف</label>
+          <select id="clientStatus" class="field">
+            <option value="جديدة">جديدة</option>
+            <option value="متابعة">متابعة</option>
+            <option value="مكتملة">مكتملة</option>
+            <option value="متوقفة">متوقفة</option>
+          </select>
+        </div>
+      </div>
+      <div class="flex gap-3 justify-end pt-3">
+        <button type="button" data-close="clientModal" class="px-5 py-3 rounded-xl bg-gray-100">إلغاء</button>
+        <button class="premium-btn px-6 py-3 rounded-xl text-white font-bold">حفظ البيانات</button>
+      </div>
+    </form>
+  </div>
+</div>
 
-            try {
-                const clientRef = doc(db, "clients", id);
-                await updateDoc(clientRef, {
-                    lastFollowup: feedback,
-                    lastFollowupDate: contactDate
-                });
-                closeFollowupModal();
-            } catch (err) {
-                alert("حدث خطأ أثناء حفظ المتابعة: " + err.message);
-            }
-        });
+<!-- Details Modal -->
+<div id="detailsModal" class="hidden fixed inset-0 z-[80] modal-bg p-3 sm:p-6 overflow-y-auto">
+  <div class="max-w-3xl mx-auto bg-white/95 backdrop-blur-xl rounded-[30px] modal-card my-4">
+    <div class="p-5 border-b flex items-center justify-between">
+      <div>
+        <h2 id="detailsName" class="text-xl font-extrabold text-plum"></h2>
+        <p id="detailsMeta" class="text-xs text-gray-500 mt-1"></p>
+      </div>
+      <button data-close="detailsModal" class="w-10 h-10 rounded-xl bg-gray-100">×</button>
+    </div>
+    <div class="p-5">
+      <div id="detailsInfo" class="grid sm:grid-cols-2 gap-3 mb-6"></div>
+      <div class="flex items-center justify-between mb-3">
+        <div>
+          <h3 class="font-extrabold">سجل المتابعات</h3>
+          <p class="text-xs text-gray-500">آخر التواصلات والملاحظات.</p>
+        </div>
+        <button id="addFollowBtn" class="px-4 py-2 rounded-xl bg-rose-600 text-white text-sm">＋ متابعة</button>
+      </div>
+      <div id="followupsList" class="space-y-3"></div>
+      <div id="followupEmpty" class="text-center py-10 text-gray-400 hidden">لا توجد متابعات مسجلة.</div>
+    </div>
+  </div>
+</div>
 
-        // Delete Client
-        window.deleteClient = async function(id) {
-            if(confirm("هل أنت متأكد من حذف هذه الحالة نهائياً؟")) {
-                try {
-                    await deleteDoc(doc(db, "clients", id));
-                } catch (err) {
-                    alert("حدث خطأ أثناء الحذف: " + err.message);
-                }
-            }
-        }
-    </script>
+<!-- Followup Modal -->
+<div id="followupModal" class="hidden fixed inset-0 z-[90] modal-bg p-3 sm:p-6">
+  <div class="max-w-lg mx-auto bg-white/95 backdrop-blur-xl rounded-[30px] modal-card my-10">
+    <div class="p-5 border-b flex items-center justify-between">
+      <h2 class="font-extrabold text-plum">إضافة متابعة</h2>
+      <button data-close="followupModal" class="w-10 h-10 rounded-xl bg-gray-100">×</button>
+    </div>
+    <form id="followupForm" class="p-5 space-y-4">
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-xs font-bold block mb-1">التاريخ</label>
+          <input id="followDate" type="date" required class="field">
+        </div>
+        <div>
+          <label class="text-xs font-bold block mb-1">الوقت</label>
+          <input id="followTime" type="time" required class="field">
+        </div>
+      </div>
+      <div>
+        <label class="text-xs font-bold block mb-1">حالة المتابعة</label>
+        <select id="followStatus" class="field">
+          <option value="متابعة">متابعة</option>
+          <option value="مكتملة">مكتملة</option>
+          <option value="متوقفة">متوقفة</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-xs font-bold block mb-1">الملاحظات</label>
+        <textarea id="followNotes" rows="5" class="field" placeholder="اكتبي تفاصيل التواصل والمتابعة..."></textarea>
+      </div>
+      <div class="flex justify-end gap-3">
+        <button type="button" data-close="followupModal" class="px-5 py-3 rounded-xl bg-gray-100">إلغاء</button>
+        <button class="premium-btn px-6 py-3 rounded-xl text-white font-bold">حفظ المتابعة</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Specialty Modal -->
+<div id="specialtyModal" class="hidden fixed inset-0 z-[80] modal-bg p-3 sm:p-6">
+  <div class="max-w-md mx-auto bg-white/95 backdrop-blur-xl rounded-[30px] modal-card my-16">
+    <div class="p-5 border-b flex items-center justify-between">
+      <h2 id="specialtyModalTitle" class="font-extrabold text-plum">إضافة تخصص</h2>
+      <button data-close="specialtyModal" class="w-10 h-10 rounded-xl bg-gray-100">×</button>
+    </div>
+    <form id="specialtyForm" class="p-5 space-y-4">
+      <input type="hidden" id="specialtyId">
+      <div>
+        <label class="text-xs font-bold block mb-1">اسم التخصص / الخدمة *</label>
+        <input id="specialtyName" required class="field">
+      </div>
+      <label class="flex items-center gap-3 text-sm">
+        <input id="specialtyActive" type="checkbox" checked class="w-4 h-4">
+        نشط ويظهر في القوائم
+      </label>
+      <div class="flex justify-end gap-3">
+        <button type="button" data-close="specialtyModal" class="px-5 py-3 rounded-xl bg-gray-100">إلغاء</button>
+        <button class="premium-btn px-6 py-3 rounded-xl text-white font-bold">حفظ</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+  import {
+    getFirestore, collection, addDoc, updateDoc, deleteDoc, doc,
+    onSnapshot, query, orderBy, serverTimestamp,
+    getDocs, where
+  } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDrfLHxOsIs4umkK1sP3CTWvI_ewQP187U",
+    authDomain: "dr-ghada.firebaseapp.com",
+    projectId: "dr-ghada",
+    storageBucket: "dr-ghada.firebasestorage.app",
+    messagingSenderId: "826625252089",
+    appId: "1:826625252089:web:870c3c1ef7ef8d34fd6028"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const state = {
+    clients: [],
+    specialties: [],
+    selectedClient: null,
+    followups: [],
+    unsubClients: null,
+    unsubSpecialties: null,
+    unsubFollowups: null
+  };
+
+  const $ = id => document.getElementById(id);
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+  const fmtDate = value => {
+    if (!value) return '—';
+    if (typeof value === 'string') {
+      const d = new Date(value + 'T00:00:00');
+      return isNaN(d) ? value : d.toLocaleDateString('ar-EG');
+    }
+    if (value?.toDate) return value.toDate().toLocaleDateString('ar-EG');
+    return '—';
+  };
+  const nowDate = () => new Date().toISOString().slice(0,10);
+  const nowTime = () => new Date().toTimeString().slice(0,5);
+
+  function toast(message, type='success') {
+    const el = document.createElement('div');
+    el.className = `fade-in px-4 py-3 rounded-2xl text-sm font-bold shadow-xl text-white ${type==='error'?'bg-red-600':'bg-plum'}`;
+    el.textContent = message;
+    $('toastRoot').appendChild(el);
+    setTimeout(() => el.remove(), 3200);
+  }
+
+  function setSync(ok, text) {
+    $('syncDot').className = `w-2.5 h-2.5 rounded-full ${ok?'bg-emerald-400':'bg-red-400'}`;
+    $('syncText').textContent = text;
+  }
+
+  function showPage(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+    $(`page-${page}`).classList.remove('hidden');
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.page === page));
+    closeSidebar();
+    if (page === 'reports') generateReport();
+  }
+
+  function closeSidebar() {
+    $('sidebar').classList.add('translate-x-full');
+    $('sidebarOverlay').classList.add('hidden');
+  }
+
+  function openModal(id) { $(id).classList.remove('hidden'); }
+  function closeModal(id) { $(id).classList.add('hidden'); }
+
+  function populateSpecialtySelects() {
+    const active = state.specialties.filter(s => s.active !== false);
+    $('clientSpecialty').innerHTML = '<option value="">اختاري التخصص</option>' +
+      active.map(s => `<option value="${esc(s.id)}">${esc(s.name)}</option>`).join('');
+    $('filterSpecialty').innerHTML = '<option value="">كل التخصصات</option>' +
+      active.map(s => `<option value="${esc(s.id)}">${esc(s.name)}</option>`).join('');
+  }
+
+  function statusBadge(status) {
+    const cls = status === 'جديدة' ? 'status-new' :
+                status === 'متابعة' ? 'status-follow' :
+                status === 'مكتملة' ? 'status-done' : 'status-stopped';
+    return `<span class="badge ${cls}">${esc(status || 'جديدة')}</span>`;
+  }
+
+  function clientSpecialtyName(c) {
+    const found = state.specialties.find(s => s.id === c.specialtyId);
+    return found?.name || c.specialtyName || 'غير محدد';
+  }
+
+  function renderDashboard() {
+    const total = state.clients.length;
+    const n = state.clients.filter(c => c.status === 'جديدة').length;
+    const f = state.clients.filter(c => c.status === 'متابعة').length;
+    const d = state.clients.filter(c => c.status === 'مكتملة').length;
+    $('statTotal').textContent = total;
+    $('statNew').textContent = n;
+    $('statFollow').textContent = f;
+    $('statDone').textContent = d;
+
+    const recent = [...state.clients].sort((a,b) => {
+      const ta = a.createdAt?.seconds || 0, tb = b.createdAt?.seconds || 0;
+      return tb-ta;
+    }).slice(0,6);
+
+    $('recentClients').innerHTML = recent.length ? recent.map(c => `
+      <button data-open-client="${esc(c.id)}" class="w-full text-right p-4 rounded-2xl bg-white border border-rose-50 hover:border-rose-200 flex items-center gap-3">
+        <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-rose-100 to-purple-100 flex items-center justify-center text-plum font-bold">${esc((c.name||'؟').trim().charAt(0))}</div>
+        <div class="flex-1 min-w-0">
+          <div class="font-bold truncate">${esc(c.name)}</div>
+          <div class="text-xs text-gray-500 truncate">${esc(clientSpecialtyName(c))} • ${esc(c.phone)}</div>
+        </div>
+        ${statusBadge(c.status)}
+      </button>
+    `).join('') : `<div class="text-center py-10 text-gray-400 text-sm">لا توجد حالات بعد.</div>`;
+
+    const counts = {};
+    state.clients.forEach(c => {
+      const name = clientSpecialtyName(c);
+      counts[name] = (counts[name] || 0) + 1;
+    });
+    const entries = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+    $('specialtySummary').innerHTML = entries.length ? entries.map(([name,count]) => `
+      <div>
+        <div class="flex justify-between text-xs mb-1"><span>${esc(name)}</span><strong>${count}</strong></div>
+        <div class="h-2 bg-rose-50 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-rose-400 to-purple-300 rounded-full" style="width:${Math.min(100,count/Math.max(total,1)*100)}%"></div></div>
+      </div>
+    `).join('') : `<div class="text-center py-10 text-gray-400 text-sm">أضيفي الحالات لعرض الإحصائيات.</div>`;
+  }
+
+  function filteredClients() {
+    const q = $('searchInput').value.trim().toLowerCase();
+    const sp = $('filterSpecialty').value;
+    const st = $('filterStatus').value;
+    return state.clients.filter(c => {
+      const text = `${c.name||''} ${c.phone||''}`.toLowerCase();
+      return (!q || text.includes(q)) && (!sp || c.specialtyId === sp) && (!st || c.status === st);
+    }).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+  }
+
+  function renderClients() {
+    const list = filteredClients();
+    $('clientsEmpty').classList.toggle('hidden', list.length !== 0);
+    $('clientsTable').innerHTML = list.map(c => `
+      <tr class="table-row">
+        <td class="p-4">
+          <button data-open-client="${esc(c.id)}" class="font-bold text-plum hover:text-rose-700">${esc(c.name)}</button>
+          <div class="text-[11px] text-gray-400 mt-1">${esc(c.address || 'بدون عنوان')}</div>
+        </td>
+        <td class="p-4" dir="ltr">${esc(c.phone)}</td>
+        <td class="p-4">${esc(clientSpecialtyName(c))}</td>
+        <td class="p-4">${fmtDate(c.startDate)}</td>
+        <td class="p-4">${statusBadge(c.status)}</td>
+        <td class="p-4 no-print">
+          <div class="flex gap-2">
+            <button data-edit-client="${esc(c.id)}" class="px-3 py-2 rounded-lg bg-purple-50 text-purple-700">تعديل</button>
+            <button data-delete-client="${esc(c.id)}" class="px-3 py-2 rounded-lg bg-red-50 text-red-600">حذف</button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function renderSpecialties() {
+    const activeCount = state.specialties.length;
+    $('specialtiesEmpty').classList.toggle('hidden', activeCount !== 0);
+    $('specialtiesGrid').innerHTML = state.specialties.map(s => `
+      <div class="glass rounded-3xl p-5 ${s.active === false ? 'opacity-60' : ''}">
+        <div class="flex items-start justify-between gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-rose-100 to-purple-100 flex items-center justify-center text-plum">✦</div>
+          <span class="badge ${s.active === false ? 'status-stopped':'status-done'}">${s.active === false ? 'غير نشط':'نشط'}</span>
+        </div>
+        <h3 class="font-extrabold text-lg mt-4">${esc(s.name)}</h3>
+        <div class="text-xs text-gray-500 mt-1">${state.clients.filter(c=>c.specialtyId===s.id).length} حالة مرتبطة</div>
+        <div class="flex gap-2 mt-5">
+          <button data-edit-specialty="${esc(s.id)}" class="flex-1 py-2 rounded-xl bg-rose-50 text-rose-700">تعديل</button>
+          <button data-delete-specialty="${esc(s.id)}" class="py-2 px-4 rounded-xl bg-gray-100 text-gray-600">حذف</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  async function openClient(id) {
+    const c = state.clients.find(x => x.id === id);
+    if (!c) return;
+    state.selectedClient = c;
+    $('detailsName').textContent = c.name || '';
+    $('detailsMeta').textContent = `${clientSpecialtyName(c)} • ${c.phone || 'بدون هاتف'}`;
+    $('detailsInfo').innerHTML = `
+      <div class="rounded-2xl bg-rose-50/60 p-4"><div class="text-xs text-gray-500">الهاتف</div><div class="font-bold mt-1" dir="ltr">${esc(c.phone)}</div></div>
+      <div class="rounded-2xl bg-purple-50/60 p-4"><div class="text-xs text-gray-500">التخصص</div><div class="font-bold mt-1">${esc(clientSpecialtyName(c))}</div></div>
+      <div class="rounded-2xl bg-rose-50/60 p-4"><div class="text-xs text-gray-500">العنوان</div><div class="font-bold mt-1">${esc(c.address || '—')}</div></div>
+      <div class="rounded-2xl bg-purple-50/60 p-4"><div class="text-xs text-gray-500">بداية المتابعة</div><div class="font-bold mt-1">${fmtDate(c.startDate)}</div></div>
+      <div class="rounded-2xl bg-rose-50/60 p-4 sm:col-span-2"><div class="text-xs text-gray-500">حالة الملف</div><div class="mt-1">${statusBadge(c.status)}</div></div>
+    `;
+    openModal('detailsModal');
+    listenFollowups(id);
+  }
+
+  function listenFollowups(clientId) {
+    if (state.unsubFollowups) state.unsubFollowups();
+    const q = query(collection(db,'clients',clientId,'followUps'), orderBy('createdAt','desc'));
+    state.unsubFollowups = onSnapshot(q, snap => {
+      state.followups = snap.docs.map(d => ({id:d.id,...d.data()}));
+      renderFollowups();
+    }, err => {
+      console.error(err);
+      $('followupsList').innerHTML = '';
+      $('followupEmpty').classList.remove('hidden');
+    });
+  }
+
+  function renderFollowups() {
+    $('followupEmpty').classList.toggle('hidden', state.followups.length !== 0);
+    $('followupsList').innerHTML = state.followups.map(f => `
+      <div class="rounded-2xl border border-rose-100 p-4">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <div class="font-bold">${fmtDate(f.date)} • ${esc(f.time || '')}</div>
+            <div class="mt-1">${statusBadge(f.status || 'متابعة')}</div>
+          </div>
+          <button data-delete-follow="${esc(f.id)}" class="text-xs text-red-500">حذف</button>
+        </div>
+        <div class="mt-3 text-sm text-gray-600 whitespace-pre-wrap">${esc(f.notes || 'لا توجد ملاحظات')}</div>
+      </div>
+    `).join('');
+  }
+
+  function openClientForm(client=null) {
+    $('clientForm').reset();
+    $('clientId').value = client?.id || '';
+    $('clientModalTitle').textContent = client ? 'تعديل بيانات الحالة' : 'تسجيل حالة جديدة';
+    $('clientName').value = client?.name || '';
+    $('clientPhone').value = client?.phone || '';
+    $('clientAddress').value = client?.address || '';
+    $('clientSpecialty').value = client?.specialtyId || '';
+    $('clientStartDate').value = client?.startDate || nowDate();
+    $('clientStatus').value = client?.status || 'جديدة';
+    openModal('clientModal');
+  }
+
+  async function saveClient(e) {
+    e.preventDefault();
+    const id = $('clientId').value;
+    const specialty = state.specialties.find(s => s.id === $('clientSpecialty').value);
+    const data = {
+      name: $('clientName').value.trim(),
+      phone: $('clientPhone').value.trim(),
+      address: $('clientAddress').value.trim(),
+      specialtyId: $('clientSpecialty').value,
+      specialtyName: specialty?.name || '',
+      startDate: $('clientStartDate').value,
+      status: $('clientStatus').value,
+      updatedAt: serverTimestamp()
+    };
+    if (!data.name || !data.phone || !data.specialtyId || !data.startDate) {
+      toast('من فضلك أكمل البيانات المطلوبة.', 'error'); return;
+    }
+    try {
+      if (id) {
+        await updateDoc(doc(db,'clients',id), data);
+        toast('تم تحديث بيانات الحالة.');
+      } else {
+        await addDoc(collection(db,'clients'), {...data, createdAt: serverTimestamp()});
+        toast('تم تسجيل الحالة بنجاح.');
+      }
+      closeModal('clientModal');
+    } catch (err) {
+      console.error(err); toast('تعذر حفظ البيانات. راجعي اتصال Firebase.', 'error');
+    }
+  }
+
+  async function deleteClient(id) {
+    const c = state.clients.find(x => x.id === id);
+    if (!c || !confirm(`هل تريد حذف حالة "${c.name}"؟ سيتم حذف سجل الحالة الأساسي.`)) return;
+    try {
+      await deleteDoc(doc(db,'clients',id));
+      toast('تم حذف الحالة.');
+    } catch (err) {
+      console.error(err); toast('تعذر حذف الحالة.', 'error');
+    }
+  }
+
+  function openSpecialtyForm(s=null) {
+    $('specialtyForm').reset();
+    $('specialtyId').value = s?.id || '';
+    $('specialtyModalTitle').textContent = s ? 'تعديل التخصص' : 'إضافة تخصص';
+    $('specialtyName').value = s?.name || '';
+    $('specialtyActive').checked = s?.active !== false;
+    openModal('specialtyModal');
+  }
+
+  async function saveSpecialty(e) {
+    e.preventDefault();
+    const id = $('specialtyId').value;
+    const name = $('specialtyName').value.trim();
+    if (!name) return toast('اكتبي اسم التخصص.', 'error');
+    const data = {name, active:$('specialtyActive').checked, updatedAt:serverTimestamp()};
+    try {
+      if (id) await updateDoc(doc(db,'specialties',id),data);
+      else await addDoc(collection(db,'specialties'),{...data,createdAt:serverTimestamp()});
+      closeModal('specialtyModal'); toast('تم حفظ التخصص.');
+    } catch(err) {
+      console.error(err); toast('تعذر حفظ التخصص.', 'error');
+    }
+  }
+
+  async function deleteSpecialty(id) {
+    const linked = state.clients.some(c => c.specialtyId === id);
+    if (linked) return toast('لا يمكن حذف تخصص مرتبط بحالات. يمكنك تعطيله بدلاً من حذفه.', 'error');
+    if (!confirm('حذف هذا التخصص؟')) return;
+    try { await deleteDoc(doc(db,'specialties',id)); toast('تم حذف التخصص.'); }
+    catch(err) { console.error(err); toast('تعذر حذف التخصص.','error'); }
+  }
+
+  async function saveFollowup(e) {
+    e.preventDefault();
+    if (!state.selectedClient) return;
+    const data = {
+      date:$('followDate').value,
+      time:$('followTime').value,
+      status:$('followStatus').value,
+      notes:$('followNotes').value.trim(),
+      createdAt:serverTimestamp()
+    };
+    try {
+      await addDoc(collection(db,'clients',state.selectedClient.id,'followUps'),data);
+      await updateDoc(doc(db,'clients',state.selectedClient.id),{
+        status:data.status === 'مكتملة' ? 'مكتملة' : data.status === 'متوقفة' ? 'متوقفة' : 'متابعة',
+        updatedAt:serverTimestamp()
+      });
+      $('followupForm').reset();
+      $('followDate').value = nowDate();
+      $('followTime').value = nowTime();
+      closeModal('followupModal');
+      toast('تم تسجيل المتابعة.');
+    } catch(err) {
+      console.error(err); toast('تعذر حفظ المتابعة.','error');
+    }
+  }
+
+  async function deleteFollowup(id) {
+    if (!state.selectedClient || !confirm('حذف هذه المتابعة؟')) return;
+    try {
+      await deleteDoc(doc(db,'clients',state.selectedClient.id,'followUps',id));
+      toast('تم حذف المتابعة.');
+    } catch(err) { console.error(err); toast('تعذر حذف المتابعة.','error'); }
+  }
+
+  function generateReport() {
+    let list = [...state.clients];
+    const from = $('reportFrom').value, to = $('reportTo').value;
+    if (from) list = list.filter(c => c.startDate >= from);
+    if (to) list = list.filter(c => c.startDate <= to);
+    list.sort((a,b)=>(a.startDate||'').localeCompare(b.startDate||''));
+    $('reportPeriod').textContent = from || to ? `${from || 'البداية'} — ${to || 'حتى الآن'}` : 'جميع السجلات';
+    $('reportTotal').textContent = list.length;
+    $('reportFollow').textContent = list.filter(c=>c.status==='متابعة').length;
+    $('reportDone').textContent = list.filter(c=>c.status==='مكتملة').length;
+    $('reportTable').innerHTML = list.map((c,i)=>`
+      <tr>
+        <td class="border p-2 text-center">${i+1}</td>
+        <td class="border p-2">${esc(c.name)}</td>
+        <td class="border p-2" dir="ltr">${esc(c.phone)}</td>
+        <td class="border p-2">${esc(clientSpecialtyName(c))}</td>
+        <td class="border p-2 text-center">${fmtDate(c.startDate)}</td>
+        <td class="border p-2 text-center">${esc(c.status || '')}</td>
+      </tr>
+    `).join('');
+  }
+
+  // Event delegation
+  document.addEventListener('click', e => {
+    const nav = e.target.closest('[data-page]');
+    if (nav) showPage(nav.dataset.page);
+
+    const jump = e.target.closest('[data-page-jump]');
+    if (jump) showPage(jump.dataset.pageJump);
+
+    const open = e.target.closest('[data-open-client]');
+    if (open) openClient(open.dataset.openClient);
+
+    const edit = e.target.closest('[data-edit-client]');
+    if (edit) openClientForm(state.clients.find(c=>c.id===edit.dataset.editClient));
+
+    const del = e.target.closest('[data-delete-client]');
+    if (del) deleteClient(del.dataset.deleteClient);
+
+    const es = e.target.closest('[data-edit-specialty]');
+    if (es) openSpecialtyForm(state.specialties.find(s=>s.id===es.dataset.editSpecialty));
+
+    const ds = e.target.closest('[data-delete-specialty]');
+    if (ds) deleteSpecialty(ds.dataset.deleteSpecialty);
+
+    const df = e.target.closest('[data-delete-follow]');
+    if (df) deleteFollowup(df.dataset.deleteFollow);
+
+    const close = e.target.closest('[data-close]');
+    if (close) closeModal(close.dataset.close);
+  });
+
+  $('dashboardAdd').onclick = () => openClientForm();
+  $('clientsAdd').onclick = () => openClientForm();
+  $('mobileAddBtn').onclick = () => openClientForm();
+  $('addSpecialtyBtn').onclick = () => openSpecialtyForm();
+  $('clientForm').addEventListener('submit', saveClient);
+  $('specialtyForm').addEventListener('submit', saveSpecialty);
+  $('followupForm').addEventListener('submit', saveFollowup);
+  $('addFollowBtn').onclick = () => {
+    $('followDate').value = nowDate();
+    $('followTime').value = nowTime();
+    $('followStatus').value = 'متابعة';
+    $('followNotes').value = '';
+    openModal('followupModal');
+  };
+  $('searchInput').addEventListener('input', renderClients);
+  $('filterSpecialty').addEventListener('change', renderClients);
+  $('filterStatus').addEventListener('change', renderClients);
+  $('generateReportBtn').onclick = generateReport;
+  $('printReportBtn').onclick = () => { generateReport(); window.print(); };
+
+  $('mobileMenuBtn').onclick = () => {
+    $('sidebar').classList.remove('translate-x-full');
+    $('sidebarOverlay').classList.remove('hidden');
+  };
+  $('sidebarOverlay').onclick = closeSidebar;
+
+  // Firestore listeners
+  function listenData() {
+    setSync(false,'جاري الاتصال بـ Firestore...');
+    state.unsubClients = onSnapshot(
+      query(collection(db,'clients'), orderBy('createdAt','desc')),
+      snap => {
+        state.clients = snap.docs.map(d=>({id:d.id,...d.data()}));
+        renderDashboard(); renderClients(); renderSpecialties(); generateReport();
+        setSync(true,'متصل • مزامنة لحظية');
+      },
+      err => {
+        console.error(err);
+        setSync(false,'تعذر الاتصال');
+        toast('تعذر قراءة الحالات من Firestore. راجعي Security Rules.', 'error');
+      }
+    );
+
+    state.unsubSpecialties = onSnapshot(
+      query(collection(db,'specialties'), orderBy('createdAt','asc')),
+      snap => {
+        state.specialties = snap.docs.map(d=>({id:d.id,...d.data()}));
+        populateSpecialtySelects(); renderDashboard(); renderClients(); renderSpecialties(); generateReport();
+      },
+      err => {
+        console.error(err);
+        toast('تعذر قراءة التخصصات من Firestore.', 'error');
+      }
+    );
+  }
+
+  listenData();
+</script>
 </body>
 </html>
