@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>كوزمو كير | نظام إدارة الحالات والمتابعة</title>
+    <!-- Tailwind CSS v4 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts (Cairo & Playfair Display for luxury touch) -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,400&display=swap');
+        
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #fdfbfb;
+            color: #2d2d2d;
+        }
+
+        .luxury-font {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Custom Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        /* Print Styling */
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white !important; }
+            .print-container { box-shadow: none !important; border: none !important; }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d8b4fe;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #c084fc;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-rose-200 selection:text-rose-900">
+
+    <!-- Top Luxury Header -->
+    <header class="bg-gradient-to-r from-rose-900 via-rose-800 to-purple-900 text-white shadow-xl no-print relative overflow-hidden">
+        <div class="absolute -right-10 -top-10 w-40 h-40 bg-rose-500/10 rounded-full blur-2xl pointer-events-none"></div>
+        <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-purple-500/10 rounded-full blur-2xl pointer-events-none"></div>
+        
+        <div class="container mx-auto px-4 py-5 flex flex-col md:flex-row justify-between items-center gap-4 relative z-10">
+            <div class="flex items-center space-x-4 space-x-reverse">
+                <div class="w-12 h-12 bg-gradient-to-br from-rose-200 to-rose-400 text-rose-950 rounded-2xl flex items-center justify-center text-2xl shadow-inner animate-pulse">
+                    <i class="fa-solid fa-spa"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold tracking-wide luxury-font">كوزمو كير <span class="text-rose-300 text-sm font-normal font-sans">Cosmo Care</span></h1>
+                    <p class="text-xs text-rose-200 flex items-center gap-2 mt-0.5">
+                        <span><i class="fa-solid fa-user-doctor text-rose-300"></i> إشراف: د. غادة مسعد</span>
+                        <span class="text-rose-400">•</span>
+                        <span><i class="fa-solid fa-user-check text-rose-300"></i> متابعة: سها طلبة</span>
+                    </p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <div id="connection-status" class="bg-rose-950/60 border border-rose-500/30 text-rose-200 text-xs px-3.5 py-1.5 rounded-full font-medium flex items-center gap-2 backdrop-blur-sm shadow-sm">
+                    <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span> جاري الاتصال بقاعدة البيانات...
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="container mx-auto px-4 py-8 flex-grow grid grid-cols-1 xl:grid-cols-4 gap-8">
+        
+        <!-- Sidebar Controls (Admin Inputs) -->
+        <div class="xl:col-span-1 space-y-6 no-print">
+            
+            <!-- Add Specialty Card -->
+            <div class="bg-white/80 backdrop-blur-md p-6 rounded-3xl shadow-sm border border-rose-100 hover:shadow-md transition duration-300 animate-fade-in">
+                <h2 class="text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-sm"><i class="fa-solid fa-tags"></i></span> 
+                    إضافة تخصص جديد
+                </h2>
+                <form id="specialty-form" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1.5">اسم الخدمة / التخصص</label>
+                        <input type="text" id="specialty-name" placeholder="مثلاً: ترطيب، خلايا، نحافة..." required class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:ring-2 focus:ring-rose-400 focus:bg-white outline-none transition">
+                    </div>
+                    <button type="submit" class="w-full bg-gradient-to-r from-rose-700 to-rose-800 hover:from-rose-800 hover:to-rose-900 text-white py-2.5 rounded-2xl font-semibold text-sm shadow-md shadow-rose-600/20 transition duration-300 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-plus text-xs"></i> حفظ التخصص
+                    </button>
+                </form>
+            </div>
+
+            <!-- Add Client Card -->
+            <div class="bg-white/80 backdrop-blur-md p-6 rounded-3xl shadow-sm border border-rose-100 hover:shadow-md transition duration-300 animate-fade-in">
+                <h2 class="text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-sm"><i class="fa-solid fa-user-plus"></i></span> 
+                    تسجيل حالة جديدة
+                </h2>
+                <form id="client-form" class="space-y-3.5">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">اسم الحالة بالكامل</label>
+                        <input type="text" id="client-name" placeholder="الاسم الكريم" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:ring-2 focus:ring-rose-400 focus:bg-white outline-none transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">رقم التلفون</label>
+                        <input type="tel" id="client-phone" placeholder="01xxxxxxxx" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:ring-2 focus:ring-rose-400 focus:bg-white outline-none transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">العنوان</label>
+                        <input type="text" id="client-address" placeholder="المدينة / المنطقة" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:ring-2 focus:ring-rose-400 focus:bg-white outline-none transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">التخصص المطلوب</label>
+                        <select id="client-specialty" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:ring-2 focus:ring-rose-400 focus:bg-white outline-none transition cursor-pointer">
+                            <option value="">اختر التخصص...</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">تاريخ بداية المتابعة</label>
+                        <input type="date" id="client-start-date" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-2xl text-sm focus:ring-2 focus:ring-rose-400 focus:bg-white outline-none transition">
+                    </div>
+                    <button type="submit" class="w-full bg-gradient-to-r from-rose-800 to-purple-800 hover:from-rose-900 hover:to-purple-900 text-white py-3 rounded-2xl font-semibold text-sm shadow-lg shadow-rose-900/20 transition duration-300 flex items-center justify-center gap-2 mt-2">
+                        <i class="fa-solid fa-check text-xs"></i> تسجيل الحالة في السيستم
+                    </button>
+                </form>
+            </div>
+
+        </div>
+
+        <!-- Data & Reports Section -->
+        <div class="xl:col-span-3 space-y-6">
+            
+            <!-- Filter & Print Action Bar -->
+            <div class="bg-white/80 backdrop-blur-md p-4 rounded-3xl shadow-sm border border-rose-100 flex flex-wrap items-center justify-between gap-4 no-print">
+                <div class="flex items-center gap-3">
+                    <span class="text-xs font-bold text-slate-600 flex items-center gap-1.5"><i class="fa-solid fa-filter text-rose-500"></i> فلترة حسب التاريخ:</span>
+                    <input type="date" id="filter-date" class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-rose-400">
+                    <button id="reset-filter" class="text-xs text-slate-500 hover:text-rose-600 font-medium underline">إلغاء الفلتر</button>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="window.print()" class="bg-slate-900 hover:bg-rose-900 text-white px-5 py-2 rounded-2xl font-medium text-xs transition duration-300 flex items-center gap-2 shadow-sm">
+                        <i class="fa-solid fa-file-pdf"></i> طباعة التقرير / حفظ PDF
+                    </button>
+                </div>
+            </div>
+
+            <!-- Report Header for Print / View -->
+            <div id="printable-report-area" class="bg-white p-6 sm:p-8 rounded-3xl shadow-sm border border-rose-100 space-y-6 print-container">
+                
+                <!-- Official Letterhead (Visible in Print & UI) -->
+                <div class="text-center pb-6 border-b border-slate-100 space-y-2">
+                    <h2 class="text-3xl font-bold text-rose-950 luxury-font tracking-wide">كوزمو كير <span class="text-rose-600 text-lg font-normal">Cosmo Care</span></h2>
+                    <p class="text-xs text-slate-500 font-medium">مركز التجميل والعناية المتكاملة</p>
+                    <div class="flex justify-center items-center gap-6 pt-2 text-xs font-semibold text-slate-700">
+                        <span class="bg-rose-50 px-3 py-1 rounded-full border border-rose-100"><i class="fa-solid fa-user-doctor text-rose-600"></i> إشراف: د. غادة مسعد</span>
+                        <span class="bg-purple-50 px-3 py-1 rounded-full border border-purple-100"><i class="fa-solid fa-user-check text-purple-600"></i> متابعة: سها طلبة</span>
+                    </div>
+                </div>
+
+                <!-- Summary Bar & Report Title -->
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                        <h3 id="report-main-title" class="text-lg font-bold text-slate-800">سجل الحالات والمتابعة التفصيلي</h3>
+                        <p id="report-sub-title" class="text-xs text-slate-400">تقرير شامل لحالات المركز اليومية</p>
+                    </div>
+                    <div id="total-count-badge" class="bg-rose-50 text-rose-800 px-4 py-1.5 rounded-full text-xs font-bold border border-rose-200">
+                        إجمالي الحالات: 0
+                    </div>
+                </div>
+
+                <!-- Main Data Table -->
+                <div class="overflow-x-auto min-h-[220px]">
+                    <table class="w-full text-right border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-200 text-slate-400 text-xs uppercase tracking-wider">
+                                <th class="py-3 px-3 font-semibold">اسم الحالة</th>
+                                <th class="py-3 px-3 font-semibold">رقم التلفون</th>
+                                <th class="py-3 px-3 font-semibold">العنوان</th>
+                                <th class="py-3 px-3 font-semibold">التخصص المطلوب</th>
+                                <th class="py-3 px-3 font-semibold">تاريخ البداية</th>
+                                <th class="py-3 px-3 font-semibold">آخر متابعة</th>
+                                <th class="py-3 px-3 font-semibold no-print">إجراءات المتابعة</th>
+                            </tr>
+                        </thead>
+                        <tbody id="clients-table-body" class="divide-y divide-slate-100 text-xs">
+                            <tr>
+                                <td colspan="7" class="text-center py-16 text-slate-400 font-medium">
+                                    <div class="flex flex-col items-center justify-center gap-3">
+                                        <div class="w-12 h-12 rounded-full bg-rose-50 text-rose-400 flex items-center justify-center text-xl">
+                                            <i class="fa-solid fa-folder-open"></i>
+                                        </div>
+                                        <span>لا توجد حالات مسجلة حتى الآن. ابدأ بإضافة الحالات الجديدة من القائمة الجانبية.</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Official Footer Signatures for Print -->
+                <div class="pt-8 mt-12 border-t border-slate-100 flex justify-between items-end text-xs text-slate-600">
+                    <div class="space-y-1">
+                        <p class="font-bold text-slate-800">إشراف عام:</p>
+                        <p class="text-rose-900 font-semibold luxury-font text-sm">د. غادة مسعد</p>
+                    </div>
+                    <div class="space-y-1 text-left">
+                        <p class="font-bold text-slate-800">مسؤول المتابعة:</p>
+                        <p class="text-purple-900 font-semibold luxury-font text-sm">سها طلبة</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Follow-up Modal -->
+    <div id="followup-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-rose-100 animate-fade-in">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-phone-volume text-rose-600"></i> تسجيل متابعة جديدة للحالة
+                </h3>
+                <button onclick="closeFollowupModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-rose-50 hover:text-rose-600 flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <form id="followup-form" class="space-y-4">
+                <input type="hidden" id="modal-client-id">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">اسم الحالة</label>
+                    <input type="text" id="modal-client-name" disabled class="w-full px-4 py-2 bg-slate-100 border border-slate-200 rounded-2xl text-xs text-slate-600 font-medium">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">تاريخ ووقت التواصل</label>
+                    <input type="datetime-local" id="modal-contact-date" required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-2xl text-xs outline-none focus:ring-2 focus:ring-rose-400">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">ملاحظات التواصل / حالة العميل</label>
+                    <textarea id="modal-feedback" rows="3" placeholder="اكتب تفاصيل المتابعة واستجابة الحالة..." required class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-2xl text-xs outline-none focus:ring-2 focus:ring-rose-400 resize-none"></textarea>
+                </div>
+                <div class="pt-2">
+                    <button type="submit" class="w-full bg-rose-700 hover:bg-rose-800 text-white py-2.5 rounded-2xl font-semibold text-xs shadow-md shadow-rose-600/20 transition duration-300">
+                        حفظ المتابعة (سها طلبة)
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-100 py-4 text-center text-xs text-slate-400 no-print">
+        <p>جميع الحقوق محفوظة © 2026 مركز كوزمو كير (Cosmo Care) • تحت إشراف د. غادة مسعد</p>
+    </footer>
+
+    <!-- Firebase SDK & Integration Script -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, addTimestamp, addDoc, getDocs, doc, updateDoc, deleteDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // Your Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDrfLHxOsIs4umkK1sP3CTWvI_ewQP187U",
+            authDomain: "dr-ghada.firebaseapp.com",
+            projectId: "dr-ghada",
+            storageBucket: "dr-ghada.firebasestorage.app",
+            messagingSenderId: "826625252089",
+            appId: "1:826625252089:web:870c3c1ef7ef8d34fd6028"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // UI Elements
+        const statusBadge = document.getElementById("connection-status");
+        const specialtyForm = document.getElementById("specialty-form");
+        const clientForm = document.getElementById("client-form");
+        const specialtySelect = document.getElementById("client-specialty");
+        const clientsTableBody = document.getElementById("clients-table-body");
+        const totalCountBadge = document.getElementById("total-count-badge");
+        const filterDateInput = document.getElementById("filter-date");
+        const resetFilterBtn = document.getElementById("reset-filter");
+        
+        // Modal Elements
+        const followupModal = document.getElementById("followup-modal");
+        const followupForm = document.getElementById("followup-form");
+        const modalClientId = document.getElementById("modal-client-id");
+        const modalClientName = document.getElementById("modal-client-name");
+        const modalContactDate = document.getElementById("modal-contact-date");
+        const modalFeedback = document.getElementById("modal-feedback");
+
+        // Global State
+        let allSpecialties = [];
+        let allClients = [];
+
+        // Set default date to today in forms
+        const todayStr = new Date().toISOString().split('T')[0];
+        document.getElementById("client-start-date").value = todayStr;
+        modalContactDate.value = new Date().toISOString().slice(0, 16);
+
+        // Update Connection Status
+        setTimeout(() => {
+            statusBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400"></span> متصل بـ Firebase بنجاح`;
+            statusBadge.className = "bg-emerald-950/60 border border-emerald-500/30 text-emerald-200 text-xs px-3.5 py-1.5 rounded-full font-medium flex items-center gap-2 backdrop-blur-sm shadow-sm";
+        }, 1000);
+
+        // 1. Fetch Specialties Real-time
+        onSnapshot(collection(db, "specialties"), (snapshot) => {
+            allSpecialties = [];
+            specialtySelect.innerHTML = '<option value="">اختر التخصص...</option>';
+            snapshot.forEach((docSnap) => {
+                const data = docSnap.data();
+                allSpecialties.push({ id: docSnap.id, ...data });
+                const option = document.createElement("option");
+                option.value = data.name;
+                option.textContent = data.name;
+                specialtySelect.appendChild(option);
+            });
+        }, (error) => {
+            console.error("Error fetching specialties:", error);
+        });
+
+        // 2. Fetch Clients Real-time
+        onSnapshot(collection(db, "clients"), (snapshot) => {
+            allClients = [];
+            snapshot.forEach((docSnap) => {
+                allClients.push({ id: docSnap.id, ...docSnap.data() });
+            });
+            renderClients(allClients);
+        }, (error) => {
+            console.error("Error fetching clients:", error);
+            clientsTableBody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-rose-500">حدث خطأ أثناء الاتصال بقاعدة البيانات. تأكد من اتصال الإنترنت.</td></tr>`;
+        });
+
+        // Add Specialty Handler
+        specialtyForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const nameInput = document.getElementById("specialty-name");
+            const name = nameInput.value.trim();
+            if(!name) return;
+
+            try {
+                await addDoc(collection(db, "specialties"), {
+                    name: name,
+                    createdAt: new Date().toISOString()
+                });
+                nameInput.value = "";
+            } catch (err) {
+                alert("حدث خطأ أثناء إضافة التخصص: " + err.message);
+            }
+        });
+
+        // Add Client Handler
+        clientForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const clientData = {
+                fullName: document.getElementById("client-name").value.trim(),
+                phone: document.getElementById("client-phone").value.trim(),
+                address: document.getElementById("client-address").value.trim(),
+                specialty: specialtySelect.value,
+                startDate: document.getElementById("client-start-date").value,
+                lastFollowup: "لم يتم التواصل بعد",
+                lastFollowupDate: "",
+                createdAt: new Date().toISOString()
+            };
+
+            try {
+                await addDoc(collection(db, "clients"), clientData);
+                clientForm.reset();
+                document.getElementById("client-start-date").value = todayStr;
+            } catch (err) {
+                alert("حدث خطأ أثناء حفظ الحالة: " + err.message);
+            }
+        });
+
+        // Render Clients Table
+        window.renderClients = function(clients) {
+            totalCountBadge.textContent = `إجمالي الحالات: ${clients.length}`;
+            if(clients.length === 0) {
+                clientsTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="text-center py-16 text-slate-400 font-medium">
+                            <div class="flex flex-col items-center justify-center gap-3">
+                                <div class="w-12 h-12 rounded-full bg-rose-50 text-rose-400 flex items-center justify-center text-xl">
+                                    <i class="fa-solid fa-folder-open"></i>
+                                </div>
+                                <span>لا توجد حالات مطابقة للبحث أو التاريخ المحدد.</span>
+                            </div>
+                        </td>
+                    </tr>`;
+                return;
+            }
+
+            clientsTableBody.innerHTML = "";
+            clients.forEach((client) => {
+                const tr = document.createElement("tr");
+                tr.className = "border-b border-slate-100 hover:bg-rose-50/30 transition duration-150";
+                tr.innerHTML = `
+                    <td class="py-3 px-3 font-bold text-slate-800">${client.fullName}</td>
+                    <td class="py-3 px-3 text-slate-600" dir="ltr">${client.phone}</td>
+                    <td class="py-3 px-3 text-slate-600">${client.address}</td>
+                    <td class="py-3 px-3"><span class="bg-rose-50 text-rose-800 px-2.5 py-1 rounded-lg font-medium text-[11px] border border-rose-100">${client.specialty}</span></td>
+                    <td class="py-3 px-3 text-slate-600">${client.startDate}</td>
+                    <td class="py-3 px-3 text-slate-600 font-medium">${client.lastFollowup}</td>
+                    <td class="py-3 px-3 no-print">
+                        <div class="flex items-center gap-2">
+                            <button onclick="openFollowupModal('${client.id}', '${client.fullName}')" class="bg-rose-100 hover:bg-rose-200 text-rose-800 px-3 py-1.5 rounded-xl font-semibold transition flex items-center gap-1.5 text-[11px]">
+                                <i class="fa-solid fa-phone"></i> متابعة
+                            </button>
+                            <button onclick="deleteClient('${client.id}')" class="bg-slate-100 hover:bg-red-100 text-slate-500 hover:text-red-600 p-1.5 rounded-xl transition">
+                                <i class="fa-solid fa-trash-can text-xs"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                clientsTableBody.appendChild(tr);
+            });
+        }
+
+        // Filter by Date
+        filterDateInput.addEventListener("change", (e) => {
+            const selectedDate = e.target.value;
+            if(!selectedDate) return;
+            const filtered = allClients.filter(c => c.startDate === selectedDate);
+            renderClients(filtered);
+            document.getElementById("report-sub-title").textContent = `تقرير الحالات المسجلة بتاريخ: ${selectedDate}`;
+        });
+
+        resetFilterBtn.addEventListener("click", () => {
+            filterDateInput.value = "";
+            renderClients(allClients);
+            document.getElementById("report-sub-title").textContent = "تقرير شامل لحالات المركز اليومية";
+        });
+
+        // Modal Functions
+        window.openFollowupModal = function(id, name) {
+            modalClientId.value = id;
+            modalClientName.value = name;
+            modalContactDate.value = new Date().toISOString().slice(0, 16);
+            modalFeedback.value = "";
+            followupModal.classList.remove("hidden");
+        }
+
+        window.closeFollowupModal = function() {
+            followupModal.classList.add("hidden");
+        }
+
+        // Save Follow-up
+        followupForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const id = modalClientId.value;
+            const contactDate = modalContactDate.value;
+            const feedback = modalFeedback.value.trim();
+
+            try {
+                const clientRef = doc(db, "clients", id);
+                await updateDoc(clientRef, {
+                    lastFollowup: feedback,
+                    lastFollowupDate: contactDate
+                });
+                closeFollowupModal();
+            } catch (err) {
+                alert("حدث خطأ أثناء حفظ المتابعة: " + err.message);
+            }
+        });
+
+        // Delete Client
+        window.deleteClient = async function(id) {
+            if(confirm("هل أنت متأكد من حذف هذه الحالة نهائياً؟")) {
+                try {
+                    await deleteDoc(doc(db, "clients", id));
+                } catch (err) {
+                    alert("حدث خطأ أثناء الحذف: " + err.message);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
